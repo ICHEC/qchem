@@ -1,4 +1,4 @@
-from qpfas.chemistry.load_default_molecules import load_molecule
+from .load_default_molecules import load_molecule
 from typing import List
 
 
@@ -27,6 +27,9 @@ class Molecule:
         geom = "\n".join([f"\t{i[0]} \t{i[1][0]:.3f} {i[1][1]:.3f} {i[1][2]:.3f}" for i in self.atom_list])
         return f'{self.label}: \n{geom}\n\nbasis: {self.basis}\nactive space: {self.active_orbitals}'
 
+    def __repr__(self):
+        return self.__str__()
+
     def get_elements(self):
         return [i[0] for i in self.atom_list]
 
@@ -34,17 +37,17 @@ class Molecule:
         return "\n".join(["{0} {1} {2} {3}".format(i[0], i[1][0], i[1][1], i[1][2]) for i in self.atom_list])
 
     @classmethod
-    def from_xyz(cls, formula: str, path: str = None):
-        xyz_data = load_molecule(formula, path).splitlines()
+    def from_xyz(cls, name: str, path: str = None):
+        xyz_data = load_molecule(name, path).splitlines()
         atom_list = [i.split() for i in xyz_data[2: 2+int(xyz_data[0])]]
         atom_list = [[i[0], (float(i[1]), float(i[2]), float(i[3]))] for i in atom_list]
-        return cls(atom_list=atom_list, label=formula, description=xyz_data[1])
+        return cls(atom_list=atom_list, label=name, description=xyz_data[1])
 
     @classmethod
-    def from_mult_xyz(cls, formula: str, path, distortion_index: int):
-        xyz_data = load_molecule(formula, path).splitlines()
+    def from_mult_xyz(cls, name: str, path, distortion_index: int):
+        xyz_data = load_molecule(name, path).splitlines()
         n_atoms = int(xyz_data[0])
         skip_over = 2 + (2+n_atoms)*distortion_index
         atom_list = [i.split() for i in xyz_data[skip_over: skip_over+n_atoms]]
         atom_list = [[i[0], (float(i[1]), float(i[2]), float(i[3]))] for i in atom_list]
-        return cls(atom_list=atom_list, label=formula, description=xyz_data[1])
+        return cls(atom_list=atom_list, label=name, description=xyz_data[1])

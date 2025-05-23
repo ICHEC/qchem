@@ -1,6 +1,6 @@
 import numpy as np
 from pyscf import gto, scf, mp
-from qpfas.chemistry import Molecule
+from . import Molecule
 
 
 def number_of_orbitals(molecule: Molecule):
